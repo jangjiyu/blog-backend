@@ -24,6 +24,7 @@
 
 ## Description
 
+the basic setup for **NestJS, typeORM(postgresql)**
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
 ## Installation
