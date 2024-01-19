@@ -11,7 +11,9 @@ export class PostEntity extends CommonEntity {
   @Column()
   content: string;
 
-  @ManyToOne(() => UserEntity, (user) => user.posts)
+  @ManyToOne(() => UserEntity, (user) => user.posts, {
+    nullable: false, // 작성자가 없는 포스트가 있으면 안 되므로 NN
+  })
   author: UserEntity;
 
   @ManyToMany(() => TagEntity, (tag) => tag.posts)
