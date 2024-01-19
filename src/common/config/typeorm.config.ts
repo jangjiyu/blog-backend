@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { UserEntity } from '../../entities/users.entity';
 import { EnvKeys } from 'src/common/const/env-keys.const';
+import { UserEntity } from '../../entities/users.entity';
+import { PostEntity } from 'src/entities/posts.entity';
+import { TagEntity } from 'src/entities/tags.entity';
 
 @Injectable()
 export class TypeOrmConfigService implements TypeOrmOptionsFactory {
@@ -15,7 +17,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       username: this.configService.get<string>(EnvKeys.ENV_DB_PG_USERNAME),
       password: this.configService.get<string>(EnvKeys.ENV_DB_PG_PASSWORD),
       database: this.configService.get<string>(EnvKeys.ENV_DB_PG_DATABASE),
-      entities: [UserEntity],
+      entities: [UserEntity, PostEntity, TagEntity],
       synchronize: true,
     };
   }
