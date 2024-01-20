@@ -9,7 +9,7 @@ export class UserEntity extends CommonEntity {
   email: string;
 
   @Column({ length: 12 })
-  userName: string;
+  username: string;
 
   @Column()
   password: string;
