@@ -10,10 +10,11 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { SignupEmailDto } from './dto/signup-email.dto';
+import { SignupByEmailDto } from './dto/signup-email.dto';
 import { editProfileDto } from './dto/edit-profile.dto';
 import { deleteAccountDto } from './dto/delete-account.dto';
 import { FindOneParamsDto } from 'src/common/dto/find-one-params.dto';
+import { loginByEmailDto } from './dto/login.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -27,12 +28,14 @@ export class UsersController {
   @ApiOperation({ summary: '회원가입 - 이메일' })
   @ApiResponse({ status: 201, description: 'success' })
   @Post('signup/email')
-  signupEmail(@Body() body: SignupEmailDto) {}
+  async signupByEmail(@Body() body: SignupByEmailDto) {
+    await this.usersService.signupByEmail(body);
+  }
 
   @ApiOperation({ summary: '로그인 - 이메일' })
   @ApiResponse({ status: 200, description: 'success' })
   @Post('login/email')
-  loginEmail() {}
+  loginByEmail(@Body() body: loginByEmailDto) {}
 
   @ApiOperation({ summary: '프로필 변경 - username, password' })
   @ApiResponse({ status: 200, description: 'success' })
