@@ -1,6 +1,6 @@
 import { PickType } from '@nestjs/swagger';
-import { SignupEmailDto } from './signup-email.dto';
+import { UserEntity } from 'src/entities/users.entity';
 
-export class deleteAccountDto extends PickType(SignupEmailDto, [
+export class deleteAccountDto extends PickType(UserEntity, [
   'password',
 ] as const) {}
