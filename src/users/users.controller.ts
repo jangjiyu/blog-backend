@@ -13,6 +13,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SignupEmailDto } from './dto/signup-email.dto';
 import { editProfileDto } from './dto/edit-profile.dto';
 import { deleteAccountDto } from './dto/delete-account.dto';
+import { paramsDto } from 'src/common/dto/params.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -37,20 +38,20 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'success' })
   @Put('profile/:userId')
   editProfile(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId', ParseIntPipe) userId: paramsDto,
     @Body() body: editProfileDto,
   ) {}
 
   @ApiOperation({ summary: '프로필 사진 변경' })
   @ApiResponse({ status: 200, description: 'success' })
   @Put('profile-img/:userId')
-  editProfileImg(@Param('userId', ParseIntPipe) userId: number) {}
+  editProfileImg(@Param('userId', ParseIntPipe) userId: paramsDto) {}
 
   @ApiOperation({ summary: '회원탈퇴' })
   @ApiResponse({ status: 200, description: 'success' })
   @Delete(':userId')
   deleteAccount(
-    @Param('userId', ParseIntPipe) userId: number,
+    @Param('userId', ParseIntPipe) userId: paramsDto,
     @Body() body: deleteAccountDto,
   ) {}
 }
