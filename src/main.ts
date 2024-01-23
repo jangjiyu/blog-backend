@@ -6,6 +6,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { HttpExceptionFilter } from './common/exceptions/http-exception.filter';
 import { ValidationPipe } from '@nestjs/common';
 import { swaggerConfig } from './common/config/swagger.config';
+import { RedisSessionConfig } from './common/config/redis.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,6 +14,7 @@ async function bootstrap() {
   const port = configService.get<number>(EnvKeys.ENV_PORT) || 3000;
 
   swaggerConfig(app);
+  RedisSessionConfig(app);
 
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new HttpExceptionFilter());
