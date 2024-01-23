@@ -8,6 +8,8 @@ export const swaggerConfig = (app: INestApplication<any>) => {
     .setVersion('1.0')
     .addCookieAuth('connect.sid')
     .build();
+
   const document = SwaggerModule.createDocument(app, config);
+
   SwaggerModule.setup('api', app, document);
 };
