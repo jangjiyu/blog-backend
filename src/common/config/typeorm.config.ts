@@ -19,6 +19,7 @@ export class TypeOrmConfigService implements TypeOrmOptionsFactory {
       database: this.configService.get<string>(EnvKeys.ENV_DB_PG_DATABASE),
       entities: [UserEntity, PostEntity, TagEntity],
       synchronize: true,
+      logging: true,
     };
   }
 }
