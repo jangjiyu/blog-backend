@@ -41,5 +41,8 @@ lerna-debug.log*
 .env.production.local
 .env.local
 
-# postgresql
+# postgresql - docker
 /postgres-data
+
+# redis - docker
+/redis-data
