@@ -24,7 +24,7 @@
 
 ## Description
 
-the basic setup for **NestJS, typeORM(postgresql)**
+개인 블로그 만들기 프로젝트 api
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
