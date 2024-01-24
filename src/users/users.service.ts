@@ -6,12 +6,12 @@ import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly userRepository: UsersRepository,
+    private readonly usersRepository: UsersRepository,
     private readonly configService: ConfigService,
   ) {}
 
   async signupByEmail(body) {
-    const isDupEmail = await this.userRepository.findUserByEmail(body.email);
+    const isDupEmail = await this.usersRepository.findUserByEmail(body.email);
 
     if (isDupEmail)
       throw new BadRequestException('이미 존재하는 이메일 정보입니다.');
@@ -20,6 +20,6 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(body.password, saltOrRounds);
 
-    this.userRepository.createUser(body.email, body.username, hashedPassword);
+    this.usersRepository.createUser(body.email, body.username, hashedPassword);
   }
 }
