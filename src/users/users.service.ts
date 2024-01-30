@@ -11,6 +11,11 @@ export class UsersService {
   ) {}
 
   async signupByEmail(body) {
+    if (body.password !== body.confirmPassword)
+      throw new BadRequestException(
+        '비밀번호와 비밀번호 확인 값이 일치하지 않습니다.',
+      );
+
     const isDupEmail = await this.usersRepository.findUserByEmail(body.email);
 
     if (isDupEmail)
@@ -20,6 +25,21 @@ export class UsersService {
 
     const hashedPassword = await bcrypt.hash(body.password, saltOrRounds);
 
-    this.usersRepository.createUser(body.email, body.username, hashedPassword);
+    const user = {
+      email: body.email,
+      password: hashedPassword,
+      username: body.username,
+      profileImg: body.profileImg,
+    };
+
+    this.usersRepository.createOrUpdateUser(user);
+  }
+
+  async editProfile(user, body) {
+    if (body.username) user.username = body.username;
+
+    this.usersRepository.createOrUpdateUser(user);
+
+    return user;
   }
 }

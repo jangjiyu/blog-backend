@@ -13,7 +13,7 @@ export class UsersRepository {
     return await this.User.findOne({ where: { email } });
   }
 
-  async createUser(email, username, password) {
-    await this.User.save({ email, password, username });
+  async createOrUpdateUser(user) {
+    await this.User.save(user);
   }
 }

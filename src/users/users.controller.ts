@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  Param,
-  ParseIntPipe,
   Post,
   Put,
   Session,
@@ -13,15 +11,15 @@ import {
 import { UsersService } from './users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { SignupByEmailDto } from './dto/signup-email.dto';
-import { editProfileDto } from './dto/edit-profile.dto';
-import { deleteAccountDto } from './dto/delete-account.dto';
-import { FindOneParamsDto } from 'src/common/dto/find-one-params.dto';
-import { LoggedInGuard } from 'src/auth/guard/logged-in.guard';
+import { EditProfileDto } from './dto/edit-profile.dto';
+import { EditPasswordDto } from './dto/edit-password.dto';
+import { DeleteAccountDto } from './dto/delete-account.dto';
 import { LocalAuthGuard } from 'src/auth/guard/local-auth.guard';
+import { LoggedInGuard } from 'src/auth/guard/logged-in.guard';
 import { NotLoggedInGuard } from 'src/auth/guard/not-logged-in.guard';
 import { User } from 'src/common/decorators/user.decorator';
-import { loginByEmailDto } from './dto/login.dto';
 import { UserEntity } from 'src/entities/users.entity';
+import { LoginByEmailDto } from './dto/login.dto';
 
 @ApiTags('USER')
 @Controller('users')
@@ -51,25 +49,30 @@ export class UsersController {
   loginByEmail(
     @User() user: UserEntity,
     @Session() session,
-    @Body() body: loginByEmailDto,
+    @Body() body: LoginByEmailDto,
   ) {
-    return { user, sessionId: session.id };
+    return { ...user, sessionId: session.id };
   }
 
-  @ApiOperation({ summary: '프로필 변경 - username, password' })
+  @ApiOperation({ summary: '프로필 변경 - username' })
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
-  @Put('profile/:userId')
-  editProfile(
-    @Param('userId', ParseIntPipe) userId: FindOneParamsDto,
-    @Body() body: editProfileDto,
-  ) {}
+  @Put('profile')
+  async editProfile(@User() user: UserEntity, @Body() body: EditProfileDto) {
+    return await this.usersService.editProfile(user, body);
+  }
+
+  @ApiOperation({ summary: '비밀번호 변경' })
+  @ApiResponse({ status: 200, description: 'success' })
+  @UseGuards(LoggedInGuard)
+  @Put('password')
+  editPassword(@User() user: UserEntity, @Body() body: EditPasswordDto) {}
 
   @ApiOperation({ summary: '프로필 사진 변경' })
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
-  @Put('profile-img/:userId')
-  editProfileImg(@Param('userId', ParseIntPipe) userId: FindOneParamsDto) {}
+  @Put('profile-img')
+  editProfileImg(@User() user: UserEntity) {}
 
   @ApiOperation({ summary: '로그아웃' })
   @ApiResponse({ status: 200, description: 'success' })
@@ -79,9 +82,7 @@ export class UsersController {
 
   @ApiOperation({ summary: '회원탈퇴' })
   @ApiResponse({ status: 200, description: 'success' })
-  @Delete(':userId')
-  deleteAccount(
-    @Param('userId', ParseIntPipe) userId: FindOneParamsDto,
-    @Body() body: deleteAccountDto,
-  ) {}
+  @UseGuards(LoggedInGuard)
+  @Delete()
+  deleteAccount(@User() user: UserEntity, @Body() body: DeleteAccountDto) {}
 }
