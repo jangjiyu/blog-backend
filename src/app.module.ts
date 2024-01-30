@@ -10,7 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import databaseConfig from './config/env/database.config';
 import appConfig from './config/env/app.config';
 import authConfig from './config/env/auth.config';
-// import { validationSchema } from './config/env/validation-schema';
+import { validationSchema } from './config/env/validation-schema';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import authConfig from './config/env/auth.config';
       load: [appConfig, databaseConfig, authConfig],
       envFilePath: process.env.NODE_ENV === 'dev' ? '.env.dev' : '.env',
       isGlobal: true,
-      // validationOptions: validationSchema,
+      validationOptions: validationSchema,
     }),
     TypeOrmModule.forRootAsync({
       useClass: TypeOrmConfigService,
