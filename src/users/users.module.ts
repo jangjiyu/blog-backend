@@ -26,12 +26,21 @@ import { v4 as uuid } from 'uuid';
         // xxx.jpg -> .jpg
         const ext = extname(file.originalname);
 
-        if (ext !== '.jpg' || '.jpeg' || '.png') {
+        if (
+          ext !== '.jpg' &&
+          ext !== '.jpeg' &&
+          ext !== '.png' &&
+          ext !== '.JPG' &&
+          ext !== '.JPEG' &&
+          ext !== '.PNG'
+        ) {
           return cb(
             new BadRequestException('jpg/jpeg/png 파일만 업로드 가능합니다'),
             false,
           );
         }
+
+        return cb(null, true);
       },
       storage: multer.diskStorage({
         destination: function (req, res, cb) {
