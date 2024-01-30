@@ -12,7 +12,7 @@ export class UsersService {
     private readonly usersRepository: UsersRepository,
   ) {}
 
-  async signupByEmail(body) {
+  async signupByEmail(body, filename?) {
     if (body.password !== body.confirmPassword)
       throw new BadRequestException(
         '비밀번호와 비밀번호 확인 값이 일치하지 않습니다.',
@@ -31,7 +31,7 @@ export class UsersService {
       email: body.email,
       password: hashedPassword,
       username: body.username,
-      profileImg: body.profileImg,
+      profileImg: filename,
     };
 
     this.usersRepository.createOrUpdateUser(user);
@@ -39,6 +39,14 @@ export class UsersService {
 
   editProfile(user, body) {
     if (body.username) user.username = body.username;
+
+    this.usersRepository.createOrUpdateUser(user);
+
+    return user;
+  }
+
+  editProfileImg(user, filename) {
+    user.profileImg = filename;
 
     this.usersRepository.createOrUpdateUser(user);
 

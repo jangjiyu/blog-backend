@@ -8,7 +8,9 @@ import {
   Req,
   Res,
   Session,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import {
@@ -27,6 +29,7 @@ import { NotLoggedInGuard } from 'src/auth/guard/not-logged-in.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { UserEntity } from 'src/entities/users.entity';
 import { LoginByEmailDto } from './dto/login.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @ApiTags('USER')
 @Controller('users')
@@ -45,9 +48,13 @@ export class UsersController {
   @ApiResponse({ status: 201, description: 'success' })
   @UseGuards(NotLoggedInGuard)
   @Post('signup/email')
-  signupByEmail(@Body() body: SignupByEmailDto) {
-    // TODO: 프로필 사진 있을 시 등록
-    return this.usersService.signupByEmail(body);
+  @UseInterceptors(FileInterceptor('profileImg'))
+  signupByEmail(
+    @Body() body: SignupByEmailDto,
+    @UploadedFile() file?: Express.Multer.File,
+  ) {
+    // TODO: 회원가입에서 프로필 사진 등록 빼기
+    return this.usersService.signupByEmail(body, file?.filename);
   }
 
   @ApiOperation({ summary: '로그인 - 이메일' })
@@ -71,6 +78,19 @@ export class UsersController {
     return this.usersService.editProfile(user, body);
   }
 
+  @ApiOperation({ summary: '프로필 사진 변경' })
+  @ApiCookieAuth('connect.sid')
+  @ApiResponse({ status: 200, description: 'success' })
+  @UseGuards(LoggedInGuard)
+  @Put('profile-img')
+  @UseInterceptors(FileInterceptor('profileImg'))
+  editProfileImg(
+    @User() user: UserEntity,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.usersService.editProfileImg(user, file.filename);
+  }
+
   @ApiOperation({ summary: '비밀번호 변경' })
   @ApiCookieAuth('connect.sid')
   @ApiResponse({ status: 200, description: 'success' })
@@ -79,13 +99,6 @@ export class UsersController {
   editPassword(@User() user: UserEntity, @Body() body: EditPasswordDto) {
     return this.usersService.editPassword(user.id, body);
   }
-
-  @ApiOperation({ summary: '프로필 사진 변경' })
-  @ApiCookieAuth('connect.sid')
-  @ApiResponse({ status: 200, description: 'success' })
-  @UseGuards(LoggedInGuard)
-  @Put('profile-img')
-  editProfileImg(@User() user: UserEntity) {}
 
   @ApiOperation({ summary: '로그아웃' })
   @ApiCookieAuth('connect.sid')
