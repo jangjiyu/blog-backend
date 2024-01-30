@@ -9,8 +9,8 @@ export const redisSessionConfig = (app: INestApplication<any>): void => {
   const configService = app.get<ConfigService>(ConfigService);
 
   // 레디스 url 정보
-  const host = configService.get('DB_REDIS_HOST');
-  const port = configService.get('DB_REDIS_PORT');
+  const host = configService.get('DB_REDIS_DOCKER_HOST');
+  const port = configService.get('DB_REDIS_DOCKER_PORT');
 
   // 레디스 설정
   const client = new Redis({
