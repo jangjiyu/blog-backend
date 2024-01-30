@@ -22,9 +22,11 @@ export class LoggingInterceptor implements NestInterceptor {
      */
     const now = new Date();
     const req = context.switchToHttp().getRequest();
+    const res = context.switchToHttp().getResponse();
     const path = req.originalUrl;
+    const method = req.method;
 
-    console.log(`[REQ] ${path} ${now.toLocaleString('kr')}`);
+    console.log(`[REQ] - [${method}] - ${path} - ${now.toLocaleString('kr')}`);
 
     // return next.handle()을 실행하는 순간 라우트의 로직이 전부 실행되고 응답이 observable로 반환된다
     // observable은 rxjs에서 제공하는 타입으로 일종의 스트림 같은 것 -> 응답을 받아서 자유롭게 변형 가능
@@ -36,9 +38,11 @@ export class LoggingInterceptor implements NestInterceptor {
       }),
       tap(() =>
         console.log(
-          `[RES] ${path} ${now.toLocaleString('kr')} ${
+          `[RES] - [${method}] - ${path} - ${now.toLocaleString(
+            'kr',
+          )} - status: ${res.statusCode} - ${
             new Date().getMilliseconds() - now.getMilliseconds()
-          }`,
+          }ms`,
         ),
       ),
     );
