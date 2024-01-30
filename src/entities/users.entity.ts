@@ -2,8 +2,15 @@ import { CommonEntity } from 'src/common/entities/common.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { PostEntity } from './posts.entity';
 import { RolesENUM } from './const/roles.const';
-import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmail,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  Length,
+} from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class UserEntity extends CommonEntity {
@@ -18,6 +25,7 @@ export class UserEntity extends CommonEntity {
 
   @IsString()
   @IsNotEmpty()
+  @Length(3, 12)
   @ApiProperty({
     description: '닉네임',
     example: 'node',
@@ -28,6 +36,8 @@ export class UserEntity extends CommonEntity {
 
   @IsString()
   @IsNotEmpty()
+  @Length(8, 20)
+  @Exclude({ toPlainOnly: true })
   @ApiProperty({
     description: '비밀번호',
     example: 'password123!',
