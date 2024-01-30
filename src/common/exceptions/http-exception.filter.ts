@@ -9,6 +9,8 @@ import {
 @Catch(HttpException) // HttpException에 해당하는 거 모두 catch해옴
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
+    console.log(exception.getResponse());
+
     const ctx = host.switchToHttp();
     const request = ctx.getRequest();
     const response = ctx.getResponse();
