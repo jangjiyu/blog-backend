@@ -1,14 +1,15 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repository';
 import * as bcrypt from 'bcrypt';
-import { ConfigService } from '@nestjs/config';
-import { EnvKeys } from 'src/common/const/env-keys.const';
+import { ConfigType } from '@nestjs/config';
+import AuthConfig from 'src/config/env/auth.config';
 
 @Injectable()
 export class UsersService {
   constructor(
+    @Inject(AuthConfig.KEY)
+    private authConfig: ConfigType<typeof AuthConfig>,
     private readonly usersRepository: UsersRepository,
-    private readonly configService: ConfigService,
   ) {}
 
   async signupByEmail(body) {
@@ -22,9 +23,7 @@ export class UsersService {
     if (isDupEmail)
       throw new BadRequestException('이미 존재하는 이메일 정보입니다.');
 
-    const saltOrRounds = parseInt(
-      this.configService.get<string>(EnvKeys.ENV_SALT),
-    );
+    const saltOrRounds = this.authConfig.salt;
 
     const hashedPassword = await bcrypt.hash(body.password, saltOrRounds);
 
@@ -62,9 +61,7 @@ export class UsersService {
         '비밀번호와 비밀번호 확인 값이 일치하지 않습니다.',
       );
 
-    const saltOrRounds = parseInt(
-      this.configService.get<string>(EnvKeys.ENV_SALT),
-    );
+    const saltOrRounds = this.authConfig.salt;
 
     const hashedPassword = await bcrypt.hash(body.password, saltOrRounds);
 

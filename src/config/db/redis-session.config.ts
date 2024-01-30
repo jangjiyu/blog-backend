@@ -4,14 +4,13 @@ import RedisStore from 'connect-redis';
 import * as session from 'express-session';
 import { Redis } from 'ioredis';
 import * as passport from 'passport';
-import { EnvKeys } from '../const/env-keys.const';
 
 export const redisSessionConfig = (app: INestApplication<any>): void => {
   const configService = app.get<ConfigService>(ConfigService);
 
   // 레디스 url 정보
-  const host = configService.get(EnvKeys.ENV_DB_REDIS_DOCKER_HOST);
-  const port = configService.get(EnvKeys.ENV_DB_REDIS_DOCKER_PORT);
+  const host = configService.get<string>('database.redisHost');
+  const port = configService.get<number>('database.redisPort');
 
   // 레디스 설정
   const client = new Redis({
@@ -27,7 +26,7 @@ export const redisSessionConfig = (app: INestApplication<any>): void => {
   // 세션 설정
   app.use(
     session({
-      secret: configService.get(EnvKeys.ENV_SESSION_SECRET),
+      secret: configService.get<string>('auth.sessionSecret'),
       saveUninitialized: false,
       resave: false,
       store: new (RedisStore as any)({
