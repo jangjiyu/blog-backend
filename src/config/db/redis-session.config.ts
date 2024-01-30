@@ -1,16 +1,15 @@
 import { INestApplication } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import RedisStore from 'connect-redis';
 import * as session from 'express-session';
 import { Redis } from 'ioredis';
 import * as passport from 'passport';
 
 export const redisSessionConfig = (app: INestApplication<any>): void => {
-  const configService = app.get<ConfigService>(ConfigService);
-
   // 레디스 url 정보
-  const host = configService.get<string>('database.redisHost');
-  const port = configService.get<number>('database.redisPort');
+  const host = process.env.DB_REDIS_HOST;
+  const port = parseInt(process.env.DB_REDIS_PORT);
+  // 세션 secret
+  const sessionSecret = process.env.SESSION_SECRET;
 
   // 레디스 설정
   const client = new Redis({
@@ -26,7 +25,7 @@ export const redisSessionConfig = (app: INestApplication<any>): void => {
   // 세션 설정
   app.use(
     session({
-      secret: configService.get<string>('auth.sessionSecret'),
+      secret: sessionSecret,
       saveUninitialized: false,
       resave: false,
       store: new (RedisStore as any)({
