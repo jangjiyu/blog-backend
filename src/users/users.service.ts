@@ -35,11 +35,36 @@ export class UsersService {
     this.usersRepository.createOrUpdateUser(user);
   }
 
-  async editProfile(user, body) {
+  editProfile(user, body) {
     if (body.username) user.username = body.username;
 
     this.usersRepository.createOrUpdateUser(user);
 
     return user;
+  }
+
+  async editPassword(userId, body) {
+    const user = await this.usersRepository.findUserById(userId);
+
+    const hashCompareResult = await bcrypt.compare(
+      body.currentPassword,
+      user.password,
+    );
+
+    if (!hashCompareResult)
+      throw new BadRequestException('현재 비밀번호가 올바르지 않습니다.');
+
+    if (body.password !== body.confirmPassword)
+      throw new BadRequestException(
+        '비밀번호와 비밀번호 확인 값이 일치하지 않습니다.',
+      );
+
+    const saltOrRounds = parseInt(this.configService.get<string>('SALT'));
+
+    const hashedPassword = await bcrypt.hash(body.password, saltOrRounds);
+
+    user.password = hashedPassword;
+
+    this.usersRepository.createOrUpdateUser(user);
   }
 }

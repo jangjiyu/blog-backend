@@ -37,9 +37,9 @@ export class UsersController {
   @ApiResponse({ status: 201, description: 'success' })
   @UseGuards(NotLoggedInGuard)
   @Post('signup/email')
-  async signupByEmail(@Body() body: SignupByEmailDto) {
+  signupByEmail(@Body() body: SignupByEmailDto) {
     // TODO: 프로필 사진 있을 시 등록
-    await this.usersService.signupByEmail(body);
+    return this.usersService.signupByEmail(body);
   }
 
   @ApiOperation({ summary: '로그인 - 이메일' })
@@ -58,15 +58,17 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Put('profile')
-  async editProfile(@User() user: UserEntity, @Body() body: EditProfileDto) {
-    return await this.usersService.editProfile(user, body);
+  editProfile(@User() user: UserEntity, @Body() body: EditProfileDto) {
+    return this.usersService.editProfile(user, body);
   }
 
   @ApiOperation({ summary: '비밀번호 변경' })
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Put('password')
-  editPassword(@User() user: UserEntity, @Body() body: EditPasswordDto) {}
+  editPassword(@User() user: UserEntity, @Body() body: EditPasswordDto) {
+    return this.usersService.editPassword(user.id, body);
+  }
 
   @ApiOperation({ summary: '프로필 사진 변경' })
   @ApiResponse({ status: 200, description: 'success' })

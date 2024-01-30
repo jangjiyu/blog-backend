@@ -9,11 +9,15 @@ export class UsersRepository {
     @InjectRepository(UserEntity) private readonly User: Repository<UserEntity>,
   ) {}
 
+  async findUserById(id) {
+    return this.User.findOneOrFail({ where: { id } });
+  }
+
   async findUserByEmail(email) {
-    return await this.User.findOne({ where: { email } });
+    return this.User.findOne({ where: { email } });
   }
 
   async createOrUpdateUser(user) {
-    await this.User.save(user);
+    return this.User.save(user);
   }
 }
