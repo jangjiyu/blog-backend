@@ -5,4 +5,5 @@ export class SignupByEmailDto extends PickType(UserEntity, [
   'email',
   'username',
   'password',
+  'profileImg',
 ] as const) {}

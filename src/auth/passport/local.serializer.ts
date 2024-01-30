@@ -21,9 +21,9 @@ export class LocalSerializer extends PassportSerializer {
   async deserializeUser(userId: string, done: CallableFunction) {
     return await this.User.findOneOrFail({
       where: { id: parseInt(userId) },
-      select: ['id', 'email', 'username'],
+      select: ['id', 'email', 'username', 'profileImg'],
     }).then((user) => {
-      console.log('user', user);
+      console.log('user: ', user);
       done(null, user);
     });
   }
