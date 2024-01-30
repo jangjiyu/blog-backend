@@ -1,7 +1,13 @@
-import { PickType } from '@nestjs/swagger';
-import { UserEntity } from 'src/entities/users.entity';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
-export class editProfileDto extends PickType(UserEntity, [
-  'username',
-  'password',
-] as const) {}
+export class EditProfileDto {
+  @IsString()
+  @IsOptional()
+  @ApiProperty({
+    description: '닉네임',
+    example: 'nodde',
+    required: false,
+  })
+  username?: string;
+}
