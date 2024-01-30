@@ -2,7 +2,7 @@ import { CommonEntity } from 'src/common/entities/common.entity';
 import { Entity, Column, OneToMany } from 'typeorm';
 import { PostEntity } from './posts.entity';
 import { RolesENUM } from './const/roles.const';
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
@@ -37,6 +37,7 @@ export class UserEntity extends CommonEntity {
   password: string;
 
   @IsString()
+  @IsOptional()
   @ApiProperty({
     description: '프로필 사진',
     example: 'https://~~~',
