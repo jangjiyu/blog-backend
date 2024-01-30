@@ -5,11 +5,18 @@ import {
   Get,
   Post,
   Put,
+  Req,
+  Res,
   Session,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiCookieAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { SignupByEmailDto } from './dto/signup-email.dto';
 import { EditProfileDto } from './dto/edit-profile.dto';
 import { EditPasswordDto } from './dto/edit-password.dto';
@@ -26,6 +33,7 @@ import { LoginByEmailDto } from './dto/login.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
   @ApiOperation({ summary: '회원정보 불러오기' })
+  @ApiCookieAuth('connect.sid')
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Get()
@@ -55,6 +63,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '프로필 변경 - username' })
+  @ApiCookieAuth('connect.sid')
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Put('profile')
@@ -63,6 +72,7 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '비밀번호 변경' })
+  @ApiCookieAuth('connect.sid')
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Put('password')
@@ -71,18 +81,26 @@ export class UsersController {
   }
 
   @ApiOperation({ summary: '프로필 사진 변경' })
+  @ApiCookieAuth('connect.sid')
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Put('profile-img')
   editProfileImg(@User() user: UserEntity) {}
 
   @ApiOperation({ summary: '로그아웃' })
+  @ApiCookieAuth('connect.sid')
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard) // 로그인 한 사람만 로그아웃 가능
-  @Post('logout')
-  logout() {}
+  @Get('logout')
+  logout(@Req() req, @Res() res) {
+    req.session.destroy();
+    res.clearCookie('connect.sid', { httpOnly: true });
+
+    return res.send({ message: 'ok' });
+  }
 
   @ApiOperation({ summary: '회원탈퇴' })
+  @ApiCookieAuth('connect.sid')
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Delete()
