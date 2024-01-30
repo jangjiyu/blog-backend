@@ -21,6 +21,7 @@ import { LocalAuthGuard } from 'src/auth/guard/local-auth.guard';
 import { NotLoggedInGuard } from 'src/auth/guard/not-logged-in.guard';
 import { User } from 'src/common/decorators/user.decorator';
 import { loginByEmailDto } from './dto/login.dto';
+import { UserEntity } from 'src/entities/users.entity';
 
 @ApiTags('USER')
 @Controller('users')
@@ -30,8 +31,8 @@ export class UsersController {
   @ApiResponse({ status: 200, description: 'success' })
   @UseGuards(LoggedInGuard)
   @Get()
-  getUser() {
-    return 'hi';
+  getUser(@User() user: UserEntity) {
+    return user;
   }
 
   @ApiOperation({ summary: '회원가입 - 이메일' })
@@ -39,6 +40,7 @@ export class UsersController {
   @UseGuards(NotLoggedInGuard)
   @Post('signup/email')
   async signupByEmail(@Body() body: SignupByEmailDto) {
+    // TODO: 프로필 사진 있을 시 등록
     await this.usersService.signupByEmail(body);
   }
 
@@ -47,7 +49,7 @@ export class UsersController {
   @UseGuards(LocalAuthGuard)
   @Post('login/email')
   loginByEmail(
-    @User() user,
+    @User() user: UserEntity,
     @Session() session,
     @Body() body: loginByEmailDto,
   ) {
