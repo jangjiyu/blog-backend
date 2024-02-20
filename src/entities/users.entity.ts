@@ -10,7 +10,9 @@ import {
   Length,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
+import { Exclude, Transform } from 'class-transformer';
+import { PROFILE_PUBLIC_IMAGE_PATH } from 'src/common/const/path.const';
+import { join } from 'path';
 
 @Entity()
 export class UserEntity extends CommonEntity {
@@ -37,13 +39,13 @@ export class UserEntity extends CommonEntity {
   @IsString()
   @IsNotEmpty()
   @Length(8, 20)
-  @Exclude({ toPlainOnly: true })
   @ApiProperty({
     description: '비밀번호',
     example: 'password123!',
     required: true,
   })
   @Column()
+  @Exclude({ toPlainOnly: true })
   password: string;
 
   @IsString()
@@ -53,6 +55,10 @@ export class UserEntity extends CommonEntity {
     example: 'https://~~~',
   })
   @Column({ nullable: true })
+  @Transform(
+    // 프로필 존재하면 '/public/profile' 추가해서 보냄
+    ({ value }) => value && `/${join(PROFILE_PUBLIC_IMAGE_PATH, value)}`,
+  )
   profileImg: string;
 
   @IsString()
